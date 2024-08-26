@@ -5,12 +5,13 @@
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/STDCharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC (LogMovement, All, All)
 
 // Sets default values
-ASTDBaseCharacter::ASTDBaseCharacter()
+ASTDBaseCharacter::ASTDBaseCharacter(const FObjectInitializer& ObjInit)
+	: Super(ObjInit.SetDefaultSubobjectClass<USTDCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -44,8 +45,8 @@ void ASTDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASTDBaseCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASTDBaseCharacter::MoveRight);
-	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTDBaseCharacter::RunOn);
-	PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTDBaseCharacter::RunOff);
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTDBaseCharacter::OnStartRunning);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTDBaseCharacter::OnStopRunning);
 
 	PlayerInputComponent->BindAxis("LookUp", this, &ASTDBaseCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnAround", this, &ASTDBaseCharacter::AddControllerYawInput);
@@ -55,6 +56,7 @@ void ASTDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void ASTDBaseCharacter::MoveForward(float Amount) 
 {
+	IsMovingForward = Amount > 0.0f;
 	AddMovementInput(GetActorForwardVector(), Amount);
 }
 
@@ -63,16 +65,25 @@ void ASTDBaseCharacter::MoveRight(float Amount)
 	AddMovementInput(GetActorRightVector(), Amount);
 }
 
-void ASTDBaseCharacter::RunOn() 
+
+
+
+void ASTDBaseCharacter::OnStartRunning()
 {
-	GetCharacterMovement()->MaxWalkSpeed = 1200.f;
-	
-	UE_LOG(LogMovement, Warning, TEXT("SHIFT NAZHAT!!!!!!"));
+	 WantsToRun = true;
+	//GetCharacterMovement()->MaxWalkSpeed = 1200.f;
+	//UE_LOG(LogMovement, Warning, TEXT("SHIFT NAZHAT!!!!!!"));
 }
 
-void ASTDBaseCharacter::RunOff() 
+void ASTDBaseCharacter::OnStopRunning()
 {
-	GetCharacterMovement()->MaxWalkSpeed = 600.f;
-	
-	UE_LOG(LogMovement, Warning, TEXT("SHIFT OTZHAT!!!!!!"));
+	 WantsToRun = false;
+	//GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	//UE_LOG(LogMovement, Warning, TEXT("SHIFT OTZHAT!!!!!!"));
 }
+
+bool ASTDBaseCharacter::IsRunning() const
+{
+    return WantsToRun && IsMovingForward && !GetVelocity().IsZero();
+}
+
