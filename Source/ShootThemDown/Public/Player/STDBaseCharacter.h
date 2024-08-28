@@ -8,6 +8,8 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class USTDHealthComponent;
+class UTextRenderComponent;
 
 UCLASS()
 class SHOOTTHEMDOWN_API ASTDBaseCharacter : public ACharacter
@@ -19,14 +21,21 @@ public:
 	ASTDBaseCharacter(const FObjectInitializer& ObjInit);
 
 protected:
-	// Called when the game starts or when spawned	
-	virtual void BeginPlay() override;
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* CameraComponent;
+
+
+	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	USTDHealthComponent* HealthComponent;
+
+	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UTextRenderComponent* HealthTextComponent;
+
+	virtual void BeginPlay() override;
 
 public:	
 	// Called every frame

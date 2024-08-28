@@ -6,6 +6,8 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/STDCharacterMovementComponent.h"
+#include "Components/STDHealthComponent.h"
+#include "Components/TextRenderComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC (LogMovement, All, All)
 
@@ -22,19 +24,29 @@ ASTDBaseCharacter::ASTDBaseCharacter(const FObjectInitializer& ObjInit)
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	HealthComponent = CreateDefaultSubobject<USTDHealthComponent>("HealthComponent");
+	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+	HealthTextComponent->SetupAttachment(GetRootComponent());
+
 }
 
 // Called when the game starts or when spawned
 void ASTDBaseCharacter::BeginPlay()
-{
+{ 
 	Super::BeginPlay();
 	
-}
+	check(HealthComponent);
+	check(HealthTextComponent);
+}	
 
 // Called every frame
 void ASTDBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	const auto Health = HealthComponent->GetHealth();
+	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 
 }
 
