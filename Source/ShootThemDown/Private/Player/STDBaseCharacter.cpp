@@ -39,18 +39,23 @@ void ASTDBaseCharacter::BeginPlay()
 	
 	check(HealthComponent);
 	check(HealthTextComponent);
+	check(GetCharacterMovement());
+
+	OnHealthChanged(HealthComponent->GetHealth());
+	HealthComponent->OnDeath.AddUObject(this, &ASTDBaseCharacter::OnDeath);
+	HealthComponent->OnHealthChanged.AddUObject(this, &ASTDBaseCharacter::OnHealthChanged);
 }	
+
+void ASTDBaseCharacter::OnHealthChanged(float Health)
+{
+HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
 
 // Called every frame
 void ASTDBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	const auto Health = HealthComponent->GetHealth();
-	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
-
-	TakeDamage(0.1, FDamageEvent{}, Controller, this); 
-
 }
 
 
@@ -115,3 +120,11 @@ float ASTDBaseCharacter::GetMovementDirection() const
     return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
 } 
 
+void ASTDBaseCharacter::OnDeath() 
+{
+	UE_LOG(BaseCharacterLog, Warning, TEXT("Player %s is Dead"), *GetName());
+	PlayAnimMontage(DeathAnimMontage);
+
+	GetCharacterMovement()->DisableMovement();
+	SetLifeSpan(5.0f);
+}
