@@ -10,6 +10,7 @@
 #include "Components/TextRenderComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC (LogMovement, All, All)
+DEFINE_LOG_CATEGORY_STATIC (BaseCharacterLog, All, All)
 
 // Sets default values
 ASTDBaseCharacter::ASTDBaseCharacter(const FObjectInitializer& ObjInit)
@@ -48,7 +49,11 @@ void ASTDBaseCharacter::Tick(float DeltaTime)
 	const auto Health = HealthComponent->GetHealth();
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 
+	TakeDamage(0.1, FDamageEvent{}, Controller, this); 
+
 }
+
+
 
 // Called to bind functionality to input
 void ASTDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
