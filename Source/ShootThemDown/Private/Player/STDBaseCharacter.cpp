@@ -8,6 +8,8 @@
 #include "Components/STDCharacterMovementComponent.h"
 #include "Components/STDHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "GameFramework/Controller.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC (LogMovement, All, All)
 DEFINE_LOG_CATEGORY_STATIC (BaseCharacterLog, All, All)
@@ -27,6 +29,7 @@ ASTDBaseCharacter::ASTDBaseCharacter(const FObjectInitializer& ObjInit)
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	HealthComponent = CreateDefaultSubobject<USTDHealthComponent>("HealthComponent");
+
 	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
 	HealthTextComponent->SetupAttachment(GetRootComponent());
 
@@ -127,4 +130,8 @@ void ASTDBaseCharacter::OnDeath()
 
 	GetCharacterMovement()->DisableMovement();
 	SetLifeSpan(5.0f);
+	if (Controller)
+      {
+          Controller->ChangeState(NAME_Spectating);
+      }
 }

@@ -23,7 +23,6 @@ public:
 	float GetHealth() const { return Health; }
 
 	UFUNCTION(BlueprintCallable)
-
 	bool IsDead() const { return Health <=0.0f;}
 
 	FOnDeath  OnDeath;

@@ -41,4 +41,4 @@ void USTDHealthComponent::OnTakeAnyDamage(
     {
      OnDeath.Broadcast();
 	}
-}
+}	
