@@ -26,7 +26,7 @@ protected:
 	USpringArmComponent* SpringArmComponent;
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	UCameraComponent* CameraComponent;
+    UCameraComponent* CameraComponent;
 
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -37,6 +37,15 @@ protected:
 
 	UPROPERTY( EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathAnimMontage;
+
+	UPROPERTY( EditDefaultsOnly, Category = "Damage")
+	float LiveSpanOnDeath = 5.0f;
+
+	UPROPERTY( EditDefaultsOnly, Category = "Damage")
+    FVector2D LandedDamageVelocity = FVector2D(900.0f, 1400.0f);
+
+	UPROPERTY( EditDefaultsOnly, Category = "Damage")
+	FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
 
 
 	virtual void BeginPlay() override;
@@ -64,4 +73,6 @@ public:
 		void OnStopRunning();
 		void OnDeath();
 		void OnHealthChanged(float Health);
+	UFUNCTION()
+		void OnGroundLanded(const FHitResult& Hit);
 };
