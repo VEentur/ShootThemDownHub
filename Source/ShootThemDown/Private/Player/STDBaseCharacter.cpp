@@ -1,6 +1,5 @@
 // ShootThemDown game. All rights reserved.
 
-
 #include "Player/STDBaseCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
@@ -9,6 +8,7 @@
 #include "Components/STDHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
+#include "Weapon/STDBaseWeapon.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC (LogMovement, All, All)
@@ -49,6 +49,8 @@ void ASTDBaseCharacter::BeginPlay()
 	HealthComponent->OnHealthChanged.AddUObject(this, &ASTDBaseCharacter::OnHealthChanged);
 
 	LandedDelegate.AddDynamic(this, &ASTDBaseCharacter::OnGroundLanded);
+
+	SpawnWeapon();
 }	
 
 void ASTDBaseCharacter::OnHealthChanged(float Health)
@@ -150,3 +152,15 @@ void ASTDBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 
 }
+
+
+void ASTDBaseCharacter::SpawnWeapon()
+{
+    if (!GetWorld()) return;
+	const auto Weapon = GetWorld()->SpawnActor<ASTDBaseWeapon>(WeaponClass);
+	if (Weapon)
+	{
+		  FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+	    Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
+	}
+};

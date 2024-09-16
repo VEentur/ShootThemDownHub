@@ -10,6 +10,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class USTDHealthComponent;
 class UTextRenderComponent;
+class ASTDBaseWeapon;
 
 UCLASS()
 class SHOOTTHEMDOWN_API ASTDBaseCharacter : public ACharacter
@@ -47,6 +48,9 @@ protected:
 	UPROPERTY( EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
 
+	UPROPERTY( EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<ASTDBaseWeapon> WeaponClass;
+
 
 	virtual void BeginPlay() override;
 
@@ -75,4 +79,6 @@ public:
 		void OnHealthChanged(float Health);
 	UFUNCTION()
 		void OnGroundLanded(const FHitResult& Hit);
+
+	void SpawnWeapon();
 };
