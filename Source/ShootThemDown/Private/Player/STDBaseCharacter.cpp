@@ -1,15 +1,17 @@
 // ShootThemDown game. All rights reserved.
 
+#include "STDBaseCharacter.h"
 #include "Player/STDBaseCharacter.h"
+
+#include "STDWeaponComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/STDCharacterMovementComponent.h"
 #include "Components/STDHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Components/STDWeaponComponent.h"
 #include "GameFramework/Controller.h"
-#include "Weapon/STDBaseWeapon.h"
-
 
 DEFINE_LOG_CATEGORY_STATIC (LogMovement, All, All)
 DEFINE_LOG_CATEGORY_STATIC (BaseCharacterLog, All, All)
@@ -24,15 +26,18 @@ ASTDBaseCharacter::ASTDBaseCharacter(const FObjectInitializer& ObjInit)
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
 	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->SocketOffset = FVector(0.0f, 100.0f, 80.0f);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	HealthComponent = CreateDefaultSubobject<USTDHealthComponent>("HealthComponent");
-
+		
 	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
 	HealthTextComponent->SetupAttachment(GetRootComponent());
+	HealthTextComponent->bOwnerNoSee = true;
 
+	WeaponComponent = CreateDefaultSubobject<USTDWeaponComponent>("WeaponComponent");
 }
 
 // Called when the game starts or when spawned
@@ -49,8 +54,6 @@ void ASTDBaseCharacter::BeginPlay()
 	HealthComponent->OnHealthChanged.AddUObject(this, &ASTDBaseCharacter::OnHealthChanged);
 
 	LandedDelegate.AddDynamic(this, &ASTDBaseCharacter::OnGroundLanded);
-
-	SpawnWeapon();
 }	
 
 void ASTDBaseCharacter::OnHealthChanged(float Health)
@@ -71,6 +74,7 @@ void ASTDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	check(PlayerInputComponent);
+	check(WeaponComponent);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASTDBaseCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASTDBaseCharacter::MoveRight);
@@ -81,6 +85,7 @@ void ASTDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("TurnAround", this, &ASTDBaseCharacter::AddControllerYawInput);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTDBaseCharacter::Jump);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTDWeaponComponent::Fire);
 }
 
 void ASTDBaseCharacter::MoveForward(float Amount) 
@@ -150,17 +155,4 @@ void ASTDBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 	const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
 	UE_LOG(BaseCharacterLog, Display, TEXT ("FinalDamage is %f"), FinalDamage );
 	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
-
 }
-
-
-void ASTDBaseCharacter::SpawnWeapon()
-{
-    if (!GetWorld()) return;
-	const auto Weapon = GetWorld()->SpawnActor<ASTDBaseWeapon>(WeaponClass);
-	if (Weapon)
-	{
-		  FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
-	    Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
-	}
-};

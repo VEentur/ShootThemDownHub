@@ -4,6 +4,8 @@
 #include "Weapon/STDBaseWeapon.h"
 #include "Components/SkeletalMeshComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC (LogBaseWeapon, All, All)
+
 ASTDBaseWeapon::ASTDBaseWeapon()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -20,3 +22,7 @@ void ASTDBaseWeapon::BeginPlay()
 }
 
 
+void ASTDBaseWeapon::Fire()
+{
+    UE_LOG(LogBaseWeapon, Display, TEXT("Fire!"));
+}  

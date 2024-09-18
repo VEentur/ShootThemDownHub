@@ -56,7 +56,7 @@ void USTDHealthComponent::OnTakeAnyDamage(
 void USTDHealthComponent::Healing()
 {
 
-    if (Health >= MaxHealth)
+    if (Health >= MaxHealth || Health == 0 )
     {
         GetWorld()->GetTimerManager().ClearTimer(HealRateHandle);
         return;
