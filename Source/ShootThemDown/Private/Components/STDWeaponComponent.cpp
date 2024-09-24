@@ -25,7 +25,7 @@ void USTDWeaponComponent::SpawnWeapon()
 	if(!Character) return;
 
 	CurrentWeapon = GetWorld()->SpawnActor<ASTDBaseWeapon>(WeaponClass);
-	if (CurrentWeapon) return;
+	if (!CurrentWeapon) return;
 
 ;	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
       CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttachPointName);
