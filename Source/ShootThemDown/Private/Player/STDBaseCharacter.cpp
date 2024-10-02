@@ -1,8 +1,6 @@
 // ShootThemDown game. All rights reserved.
 
 #include "STDBaseCharacter.h"
-#include "Player/STDBaseCharacter.h"
-
 #include "STDWeaponComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
@@ -11,6 +9,7 @@
 #include "Components/STDHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/STDWeaponComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC (LogMovement, All, All)
@@ -143,6 +142,7 @@ void ASTDBaseCharacter::OnDeath()
       {
           Controller->ChangeState(NAME_Spectating);
       }
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 }
 
 void ASTDBaseCharacter::OnGroundLanded(const FHitResult& Hit)

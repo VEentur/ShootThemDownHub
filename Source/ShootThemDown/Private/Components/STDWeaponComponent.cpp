@@ -15,6 +15,7 @@ void USTDWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 	
 	SpawnWeapon();
+	//CurrentWeapon->WeaponHit.AddUObject(this, ApplyWeaponDamage);
 }
 
 void USTDWeaponComponent::SpawnWeapon()

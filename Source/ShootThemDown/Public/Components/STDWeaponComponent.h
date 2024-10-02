@@ -6,6 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "STDWeaponComponent.generated.h"
 
+
+//DECLARE_MULTICAST_DELEGATE_OneParam(FWeaponHit, float);
+
 class ASTDBaseWeapon;
 
 UCLASS()
