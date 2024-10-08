@@ -19,7 +19,8 @@ public:
 
 	USTDWeaponComponent();
 
-    void Fire();
+    void StartFire();
+    void StopFire();
 
 protected:
 

@@ -26,13 +26,16 @@ void ASTDBaseWeapon::BeginPlay()
 
 }
 
-void ASTDBaseWeapon::Fire()
+void ASTDBaseWeapon::StartFire()
 {
-    UE_LOG(LogBaseWeapon, Display, TEXT("Fire!"));
-
-    MakeShot();
 
 }
+
+void ASTDBaseWeapon::StopFire()
+{
+
+}
+
 
 void ASTDBaseWeapon::MakeDamage(const FHitResult& HitResult)
 {
@@ -45,26 +48,7 @@ void ASTDBaseWeapon::MakeDamage(const FHitResult& HitResult)
 
 void ASTDBaseWeapon::MakeShot()
 {
-    if(!GetWorld()) UE_LOG(LogBaseWeapon, Error, TEXT("SOSI!!"));
-    if(!GetWorld()) return;
 
-	FVector TraceStart, TraceEnd;
-	if(!GetTraceData(TraceStart, TraceEnd)) return;
-
-	FHitResult HitResult;
-	MakeHit(HitResult, TraceStart, TraceEnd);
-	
-    if (HitResult.bBlockingHit)
-    {
-		MakeDamage(HitResult);
-        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-	    DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 4.0f);
-    }
-
-    else
-    {
-        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Yellow, false, 3.0f, 0, 3.0f);
-    }
 }
 
 APlayerController* ASTDBaseWeapon::GetPlayerController() const
@@ -93,7 +77,8 @@ bool ASTDBaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
 	FRotator ViewRotation;
 	if(!GetPlayerViewPoint(ViewLocation, ViewRotation)) return false;
 
-	TraceStart = ViewLocation; 
+	TraceStart = ViewLocation;
+	
 	const FVector ShootDirection = ViewRotation.Vector();
 	TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
 	return true;

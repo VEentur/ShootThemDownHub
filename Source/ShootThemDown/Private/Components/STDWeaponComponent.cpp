@@ -34,8 +34,13 @@ void USTDWeaponComponent::SpawnWeapon()
 }
 
 
-void USTDWeaponComponent::Fire()
+void USTDWeaponComponent::StartFire()
 {
     if(!CurrentWeapon) return;
-	CurrentWeapon->Fire();
+	CurrentWeapon->StartFire();
+}
+
+void USTDWeaponComponent::StopFire()
+{
+	CurrentWeapon->StopFire();
 }

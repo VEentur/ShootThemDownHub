@@ -19,7 +19,8 @@ class SHOOTTHEMDOWN_API ASTDBaseWeapon : public AActor
 public:	
 	ASTDBaseWeapon();
 
-	virtual void Fire();
+	virtual void StartFire();
+	virtual void StopFire();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FName MuzzleSocketName = "MuzzleSocket";
@@ -31,6 +32,7 @@ public:
 	float DamageAmount = 10.0f;
 
 
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -38,7 +40,8 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	void MakeShot();
+	virtual void MakeShot();
+	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
 
 	void MakeDamage(const FHitResult& HitResult);
 
@@ -48,7 +51,7 @@ protected:
 
 	FVector GetMuzzleWorldLocation() const;
 
-	bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
+
 
 	void MakeHit(FHitResult& HitResult, const FVector& TraceStart, FVector& TraceEnd);
 

@@ -84,7 +84,8 @@ void ASTDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("TurnAround", this, &ASTDBaseCharacter::AddControllerYawInput);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTDBaseCharacter::Jump);
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTDWeaponComponent::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTDWeaponComponent::StartFire);
+    PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTDWeaponComponent::StopFire);
 }
 
 void ASTDBaseCharacter::MoveForward(float Amount) 
@@ -135,6 +136,7 @@ void ASTDBaseCharacter::OnDeath()
 {
 	UE_LOG(BaseCharacterLog, Warning, TEXT("Player %s is Dead"), *GetName());
 	PlayAnimMontage(DeathAnimMontage);
+	//WeaponComponent->StopFire();
 
 	GetCharacterMovement()->DisableMovement();
 	SetLifeSpan(LiveSpanOnDeath);
