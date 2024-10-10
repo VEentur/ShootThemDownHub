@@ -37,13 +37,7 @@ void ASTDBaseWeapon::StopFire()
 }
 
 
-void ASTDBaseWeapon::MakeDamage(const FHitResult& HitResult)
-{
-  const auto DamagedActor = HitResult.GetActor();
-	if (!DamagedActor) return;
 
-	DamagedActor->TakeDamage(DamageAmount, FDamageEvent{}, GetPlayerController(), this);
-}
 
 
 void ASTDBaseWeapon::MakeShot()

@@ -22,28 +22,21 @@ public:
 	virtual void StartFire();
 	virtual void StopFire();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FName MuzzleSocketName = "MuzzleSocket";
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float TraceMaxDistance = 1500.0f;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float DamageAmount = 10.0f;
-
-
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
 
 	virtual void BeginPlay() override;
 
 	virtual void MakeShot();
 	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
-
-	void MakeDamage(const FHitResult& HitResult);
 
 	APlayerController* GetPlayerController() const;
 
