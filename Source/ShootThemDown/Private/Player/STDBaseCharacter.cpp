@@ -86,6 +86,8 @@ void ASTDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTDBaseCharacter::Jump);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTDWeaponComponent::StartFire);
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTDWeaponComponent::StopFire);
+
+    PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &USTDWeaponComponent::NextWeapon);
 }
 
 void ASTDBaseCharacter::MoveForward(float Amount) 
@@ -145,6 +147,7 @@ void ASTDBaseCharacter::OnDeath()
           Controller->ChangeState(NAME_Spectating);
       }
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	WeaponComponent->StopFire();
 }
 
 void ASTDBaseCharacter::OnGroundLanded(const FHitResult& Hit)
