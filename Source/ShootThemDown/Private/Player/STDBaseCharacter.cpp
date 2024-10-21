@@ -79,15 +79,13 @@ void ASTDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASTDBaseCharacter::MoveRight);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTDBaseCharacter::OnStartRunning);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTDBaseCharacter::OnStopRunning);
-
 	PlayerInputComponent->BindAxis("LookUp", this, &ASTDBaseCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnAround", this, &ASTDBaseCharacter::AddControllerYawInput);
-
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTDBaseCharacter::Jump);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTDWeaponComponent::StartFire);
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTDWeaponComponent::StopFire);
-
-    PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &USTDWeaponComponent::NextWeapon);
+	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &USTDWeaponComponent::NextWeapon);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &USTDWeaponComponent::Reload);
 }
 
 void ASTDBaseCharacter::MoveForward(float Amount) 

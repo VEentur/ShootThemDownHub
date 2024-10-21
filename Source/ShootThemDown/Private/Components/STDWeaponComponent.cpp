@@ -40,9 +40,9 @@ void USTDWeaponComponent::SpawnWeapons()
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 	if (!Character || !GetWorld()) return;
 
-	for (auto WeaponClass : WeaponClasses)
+	for (auto OneWeaponData : WeaponData)
 	{
-	    auto Weapon = GetWorld()->SpawnActor<ASTDBaseWeapon>(WeaponClass);
+	    auto Weapon = GetWorld()->SpawnActor<ASTDBaseWeapon>(OneWeaponData.WeaponClass);
 	    if (!Weapon) continue;
 
 	    Weapon->SetOwner(Character);
@@ -62,6 +62,10 @@ void USTDWeaponComponent::AttachWeaponToSocket(ASTDBaseWeapon* Weapon, USceneCom
 
 void USTDWeaponComponent::EquipWeapon(int32 WeaponIndex)
 {
+    if (WeaponIndex < 0 || WeaponIndex >= Weapons.Num())
+    {
+    UE_LOG(LogWeaponComponent, Warning, TEXT("WeaponIndex NOT VALID"));
+	}
     ACharacter* Character = Cast<ACharacter>(GetOwner());
 	if (!Character) return;
 
@@ -72,6 +76,12 @@ void USTDWeaponComponent::EquipWeapon(int32 WeaponIndex)
 	}
 
 	CurrentWeapon = Weapons[WeaponIndex];
+	//CurrentReloadAnimMontage = WeaponData[WeaponIndex].ReloadAnimMontage;
+	const auto CurrentWeaponData = WeaponData.FindByPredicate([&](const FWeaponData& Data){ //
+		return Data.WeaponClass == CurrentWeapon->GetClass();//
+		});
+	CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage : nullptr;
+
 	AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
 	EquipAnimInProgress = true;
 	PlayAnimMontage(EquipAnimMontage);
@@ -95,6 +105,11 @@ void USTDWeaponComponent::NextWeapon()
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
 	EquipWeapon(CurrentWeaponIndex);
 }
+
+void USTDWeaponComponent::Reload()
+{
+	PlayAnimMontage(CurrentReloadAnimMontage);
+}
  
 void USTDWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 {
@@ -103,7 +118,7 @@ void USTDWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 	Character->PlayAnimMontage(Animation);
 }
 
-void USTDWeaponComponent::InitAnimations()
+void USTDWeaponComponent::InitAnimations() 
 {
 	if (!EquipAnimMontage) return;
 
