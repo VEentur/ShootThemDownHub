@@ -18,7 +18,8 @@ public class ShootThemDown : ModuleRules
 			"ShootThemDown/Public/Components",
 			"ShootThemDown/Public/Dev",
 			"ShootThemDown/Public/Weapon",
-            "ShootThemDown/Public/UI"
+            "ShootThemDown/Public/UI",
+            "ShootThemDown/Public/Animations"
         });
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

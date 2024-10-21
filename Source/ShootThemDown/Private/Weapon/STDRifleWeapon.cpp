@@ -19,10 +19,19 @@ void ASTDRifleWeapon::StopFire()
 
 void ASTDRifleWeapon::MakeShot()
 {
-    if(!GetWorld()) return;
+
+    if(!GetWorld() || IsAmmoEmpty())
+    {
+		StopFire();
+		return;
+    }
 
 	FVector TraceStart, TraceEnd;
-	if(!GetTraceData(TraceStart, TraceEnd)) return;
+	if(!GetTraceData(TraceStart, TraceEnd))
+	{
+		StopFire();
+		return;
+    }
 
 	FHitResult HitResult;
 	MakeHit(HitResult, TraceStart, TraceEnd);
@@ -38,6 +47,7 @@ void ASTDRifleWeapon::MakeShot()
     {
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Yellow, false, 3.0f, 0, 3.0f);
     }
+	DecreaseAmmo();
 }
 
 bool ASTDRifleWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const

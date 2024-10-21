@@ -3,7 +3,7 @@
 
 #include "Weapon/STDBaseWeapon.h"
 #include "Components/SkeletalMeshComponent.h"
-#include  "Engine/World.h"
+#include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
@@ -23,7 +23,7 @@ void ASTDBaseWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	check(WeaponMesh);
-
+	CurrentAmmo = DefaultAmmo;
 }
 
 void ASTDBaseWeapon::StartFire()
@@ -35,10 +35,6 @@ void ASTDBaseWeapon::StopFire()
 {
 
 }
-
-
-
-
 
 void ASTDBaseWeapon::MakeShot()
 {
@@ -85,4 +81,43 @@ void ASTDBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, F
     FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(GetOwner());
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart,TraceEnd, ECC_Visibility, CollisionParams);
+}
+
+void ASTDBaseWeapon::DecreaseAmmo()
+{
+	CurrentAmmo.Bullets--;
+	LogAmmo();
+
+	if (IsClipEmpty() && !IsAmmoEmpty())
+    {
+		ChangeClip();
+    }
+}
+
+bool ASTDBaseWeapon::IsAmmoEmpty() const
+{
+    return !CurrentAmmo.Intinite && CurrentAmmo.Clips == 0 && IsClipEmpty();
+}
+
+bool ASTDBaseWeapon::IsClipEmpty() const
+{
+    return CurrentAmmo.Bullets == 0;
+}
+
+void ASTDBaseWeapon::ChangeClip()
+{
+	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+	if (!CurrentAmmo.Intinite)
+    {
+    CurrentAmmo.Clips--;
+	}
+	UE_LOG(LogBaseWeapon, Display, TEXT("=====ChangeClip====="));
+
+}
+
+void ASTDBaseWeapon::LogAmmo()
+{
+	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + "/";
+	AmmoInfo += CurrentAmmo.Intinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
+	UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo);
 }
